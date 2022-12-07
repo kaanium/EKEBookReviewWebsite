@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+    <h:head>
+        <meta charset="UTF-8"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous"></link>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <f:metadata>
+            <f:viewAction action="#{search.onLoad()}"/>
+        </f:metadata>
+    </h:head>
+    <h:body>
+        <script>
+            function onLoad() {
+                $("tbody tr").addClass("list-group");
+                $("tr td").addClass("row");
+                $("td input").addClass("form-check-input");
+                $("td label").addClass("list-group-item col-9");
+            }
+            ;
+            function inp(event) {
+                document.getElementById('form:rateInput').value = event.value;
+            }
+            ;
+            $(document).ready(function () {
+                onLoad();
+            });
+        </script>
+        <style>
+            .star{
+                font-size: 6px;
+            }
+        </style>
+        <ui:insert>
+            <ui:include src="navbar.xhtml"/>
+        </ui:insert>
+        <div class="container-xxl pt-4 shadow rounded">
+            <h:form id="form">
+                <div class="row">
+                    <div class="col-4 ms-auto">
+                        <h:inputText class="form-control" value="#{search.searchString}" a:placeholder="Search"/>
+                    </div>
+                    <h:commandButton id="searchbtn1" value="Search" action="#{search.filter()}" class="btn btn-outline-success col-1 me-5" type="submit">
+                        <f:ajax execute="@form" render="@form" onevent="onLoad()"/>
+                    </h:commandButton>
+                    <div class="col-2">
+                        <h:selectOneMenu class="form-select" value="#{search.orderColumn}">
+                            <f:selectItem itemValue="rating" itemLabel="Rating" />
+                            <f:selectItem itemValue="name" itemLabel="Name" />
+                            <f:ajax event="change" execute="@form" render="@form" onevent="onLoad()" listener="#{search.filter()}"/>
+                        </h:selectOneMenu>
+                    </div>
+                    <div class="col-1">
+                        <h:selectOneMenu class="form-select" value="#{search.orderType}">
+                            <f:selectItem itemValue="DESC" itemLabel="Asc" />
+                            <f:selectItem itemValue="ASC" itemLabel="Desc" />
+                            <f:ajax event="change" execute="@form" render="@form" onevent="onLoad()" listener="#{search.filter()}"/>
+                        </h:selectOneMenu>
+                    </div>
+                </div>
+                <div class="row mt-5 pb-5 px-3">
+                    <div class="col-2 list-group">
+                        <ui:repeat value="#{search.genres}" var="genre">
+                            <h:outputLabel class="list-group-item text-capitalize">
+                                <h:selectBooleanCheckbox value="#{genre.value}" class="form-check-input me-2"/>
+                                #{genre.name}
+                            </h:outputLabel>
+                        </ui:repeat>
+                        <div class="row mt-3">
+                            <h:outputText class="h4 ms-1 col-4" value="Rating"/>
+                            <h:outputText class="col-7 my-auto" value="Equal or More than:" style="font-size:12px;"/>
+                        </div>
+                        <div class="row">
+                            <div class="col-2 ms-auto">
+                                <h:outputText value="0"/> 
+                            </div>
+                            <div class="col-2 ms-auto">
+                                <h:outputText value="1"/> 
+                            </div>
+                            <div class="col-2 ms-auto">
+                                <h:outputText value="2"/> 
+                            </div>
+                            <div class="col-2 ms-auto">
+                                <h:outputText value="3"/>
+                            </div>
+                            <div class="col-2 ms-auto">
+                                <h:outputText value="4"/>
+                            </div>
+                            <div class="col-2 ms-auto">
+                                <h:outputText value="5"/>
+                            </div>
+                        </div>
+                        <input type="range" class="form-range" min="0" max="5" id="ratingSlider" value="#{search.searchRating}" oninput="inp(this)"/>
+                        <h:inputHidden value="#{search.searchRating}" id="rateInput"/>
+                        <h:commandButton id="searchtbtn2" value="Filter" action="#{search.filter()}" class="btn btn-success my-3" type="submit">
+                            <f:ajax execute="@form" render="@form" onevent="onLoad()"/>
+                        </h:commandButton>
+                    </div>
+                    <div class="col-10">
+                        <ui:repeat value="#{search.resultBooks}" var="b" rendered="#{not empty search.resultBooks}">
+                            <div class="col-4 mx-auto p-0 w-100">  
+                                <div class="card border-0" style="height:145px;">
+                                    <div class="row g-0">
+                                        <div class="col-1">
+                                            <h:graphicImage url="/resources/book-images/#{b.id}.jpg" class="card-img-top rounded" style="width:88px;height:145px;"/>
+                                        </div>
+                                        <div class="col-11">
+                                            <div class="card-body pt-0 h-100">
+                                                <h:outputLink class="card-title h5 text-dark" value="faces/book.xhtml?id=#{b.id}" style="text-decoration:none;">#{b.name}</h:outputLink>
+                                                <div class="" style="float:right;">
+                                                    <h:outputText class="ms-auto me-2 bi bi-star text-warning h4"/>
+                                                    <h:outputText class="h4 text-warning" value="#{b.rating}/5"/>
+                                                </div>
+                                                <br/>
+                                                <h:outputText class="" value="by #{b.author}"/>
+                                                <div class="mt-1">
+                                                    <h:outputText class="card-text" value="#{b.getShortSynopsis(510)}"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr/>
+                            </div>
+                        </ui:repeat>
+                    </div>
+                </div>
+            </h:form>
+        </div>
+    </h:body>
+    <footer>
+        <ui:insert>
+            <ui:include src="footer.xhtml" />
+        </ui:insert>
+    </footer>
+</html>
+

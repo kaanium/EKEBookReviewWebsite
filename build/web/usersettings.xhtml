@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+    <style> .footer {
+   position:absolute;
+   bottom:0;
+   height: 20%;
+   width:100%;
+}
+</style>
+    <h:head>
+        <meta charset="UTF-8"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous"></link>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    </h:head>
+    <h:body>
+        <ui:insert>
+            <ui:include src="navbar.xhtml" />
+        </ui:insert>
+
+        <h:panelGroup class="w-75 pb-5 position-absolute shadow" style="margin-left:12%;padding-top:3%; padding-left: 5%;" rendered="#{!Main.user.isGuest}">
+            <div class="col-12">
+
+                <h1 style="text-decoration: underline;">User Settings</h1>
+
+                <div class="my-5">     
+                    <h3>User Informations</h3>
+                    <h:outputText class="my-2" value="Name: "/>
+                    <h:outputText class="my-2" value="#{Main.user.user.name}"/><br/>
+                    <h:outputText class="my-2" value="E-mail: "/>
+                    <h:outputText class="my-2" value="#{Main.user.user.email}"/>
+                </div>
+
+                <div>
+                    <h:form id="form">
+                        <h:panelGroup class="alert alert-success row" rendered="#{settings.successful}" style="display:inline-block;">
+                            <h:outputText id="successfulInfo" value="Password changed successfully!"/>
+                        </h:panelGroup>
+                        <h:panelGroup class="alert alert-danger row" rendered="#{settings.error}" style="display:inline-block;">
+                            <h:outputText id="errorInfo" value="Old password not correct or new passwords is not same!"/>
+                        </h:panelGroup>
+                        <h3> Change Your Password</h3>
+                        <div class="row">
+                            <div class="col-3 my-2">
+                                <label class="form-label">Old Password:</label>
+                            </div>
+                            <div class="col-3">
+                                <h:inputSecret class="form-control" value="#{settings.oldPassword}"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3 my-2">
+                                <label class="form-label">New Password:</label>
+                            </div>
+                            <div class="col-3">
+                                <h:inputSecret class="form-control" value="#{settings.newPassword}"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3 my-2">
+                                <label class="form-label">New Password Again:</label>
+                            </div>
+                            <div class="col-3">
+                                <h:inputSecret class="form-control" value="#{settings.newPasswordAgain}"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <h:commandButton id="submitbtn" action="#{settings.changePassword()}" class="float-end btn btn-primary" type="submit" value="Change Password">
+                                    <f:ajax execute="@form" render="@form"/>
+                                </h:commandButton>
+                            </div>
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{Main.user.isGuest}">
+            <h:outputText class="text-danger h1 d-flex justify-content-center mt-3" value="Please Log In To See This Page !"/>
+        </h:panelGroup>
+    </h:body>
+    <footer>
+        <div class="footer">
+        <ui:insert>
+            <ui:include src="footer.xhtml" />
+        </ui:insert>
+        </div>
+    </footer>
+</html>
